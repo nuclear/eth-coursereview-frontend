@@ -114,10 +114,10 @@ async function submitNewReview() {
         v-on:input="updateValue"
       ></v-textarea>
       
-      <h3>Temporary Claim Code</h3>
-      <p>Login is currently unavailable. Enter a unique code here so you can claim this review later.</p>
+      <h3 v-if="isAdd">Temporary Claim Code</h3>
+      <p v-if="isAdd">Login is currently unavailable. Enter a unique code here so you can claim this review later.</p>
       <input v-model="randomString" placeholder="Pick a random string" maxlength="16"
-      style="border: 1px solid #ccc; padding: 2px 12px;"/>
+      style="border: 1px solid #ccc; padding: 2px 12px;" v-if="isAdd"/>
 
     </v-card-text>
     <v-card-subtitle v-if="!editable">{{ semester }}</v-card-subtitle>
