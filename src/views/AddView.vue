@@ -25,6 +25,7 @@ onMounted(async () => {
 
 onMounted(async () => {
   const response = await fetchCoursesData()
+  if (response.data == null) return
   const fetchedCourses = response.data.map((course) => ({
     label: `${course.CourseNumber} ${course.CourseName}`,
     number: course.CourseNumber
