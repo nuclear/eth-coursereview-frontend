@@ -5,12 +5,10 @@ import { defaultStarRatings } from '@/services/api'
 import TextReview from '../components/TextReview.vue'
 import StarRating from '../components/StarRating.vue'
 import CheckAuth from '@/components/CheckAuth.vue'
-import { studentAuth } from '@/router/index'
 
 const semesters = ref<string[]>([])
 const reviewAdd = ref('')
 const starRatingsAdd = ref(defaultStarRatings())
-const isLoggedIn = ref(false)
 const selectedSemester = ref('')
 const courses = ref<{ label: string; number: string }[]>([])
 const selectedCourseNumber = ref('')
@@ -46,9 +44,6 @@ function blankPage() {
 }
 const panels = ref([0])
 
-onMounted(async () => {
-  isLoggedIn.value = await studentAuth()
-})
 </script>
 
 <template>
@@ -88,7 +83,6 @@ onMounted(async () => {
             v-model:review="reviewAdd"
             :editable="true"
             :is-add="true"
-            :is-logged-in="isLoggedIn"
             :ratings="starRatingsAdd"
             :semester="selectedSemester"
             :course-number="selectedCourseNumber"

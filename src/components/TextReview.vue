@@ -9,7 +9,6 @@ const {
   reviewId = -1,
   review,
   isAdd = false,
-  isLoggedIn = false,
   ratings,
   semester,
   courseNumber,
@@ -20,14 +19,12 @@ const {
   semester?: string
   editable?: boolean
   isAdd?: boolean
-  isLoggedIn?: boolean
   courseNumber?: string
   ratings?: { [key: string]: Rating }
   reloadData?: () => any
 }>()
 
 const showSnackbar = ref(false)
-const randomString = ref('');
 const moderationError = ref('')
 
 const emit = defineEmits(['update:review'])
@@ -96,9 +93,8 @@ async function submitNewReview() {
   } else {
     try {
       moderationError.value = ''
-      await pushNewReview(reviewText.value, courseNumber, semester, randomString.value, ratings)
+      await pushNewReview(reviewText.value, courseNumber, semester, '', ratings)
       reviewText.value = ''
-      randomString.value = ''
       localStorage.removeItem('text')
       showSnackbar.value = true
       //todo something here: clear ratings, review, semester, courseNumber and show text
@@ -135,13 +131,6 @@ async function submitNewReview() {
         :readonly="!isEditing"
         v-on:input="updateValue"
       ></v-textarea>
-
-      <div v-if="isAdd && !isLoggedIn">
-        <h3>Temporary Claim Code</h3>
-        <p>Login is currently unavailable. Enter a unique code here so you can claim this review later.</p>
-        <input v-model="randomString" placeholder="Pick a random string" maxlength="16"
-        style="border: 1px solid #ccc; padding: 2px 12px;"/>
-      </div>
 
       <v-alert v-if="moderationError" type="warning" variant="tonal" class="mt-3" closable @click:close="moderationError = ''">
         {{ moderationError }}

@@ -17,7 +17,7 @@ function redirectToLogin() {
 </script>
 
 <template>
-  <v-dialog v-model="notLoggedIn" max-width="50%">
+  <v-dialog v-model="notLoggedIn" max-width="50%" persistent>
     <v-card class="mx-auto" style="margin-top: 10px">
       <v-card-title>Not logged in!</v-card-title>
       <v-card-text>Please log in to view your reviews and add reviews.</v-card-text>
