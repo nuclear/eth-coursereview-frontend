@@ -108,11 +108,9 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     const isAuthenticated = await studentAuth()
     if (!isAuthenticated) {
-      //redirect to login page -> n.ethz.ch
-      const redirectUrl = `${window.location.origin}/tokenset`
       const originUrl = to.fullPath
-      const authorizationUrl = 'https://n.ethz.ch/~lteufelbe/auth' //todo set as env var
-      window.location.href = `${authorizationUrl}?redirect=${encodeURI(redirectUrl)}&origin=${encodeURI(originUrl)}`
+      const oauthLoginUrl = import.meta.env.VITE_OAUTH_LOGIN_URL || (import.meta.env.VITE_API_URL + '/oauth/login')
+      window.location.href = `${oauthLoginUrl}?origin=${encodeURI(originUrl)}`
     }
     next()
   } else {

@@ -3,11 +3,13 @@ import { pushDeleteReview, pushNewReview, pushUpdateReview } from '@/services/ap
 import { computed, ref } from 'vue'
 import type { Rating } from './Rating.types'
 import { nextTick } from 'vue'
+import axios from 'axios'
 const {
   editable = false,
   reviewId = -1,
   review,
   isAdd = false,
+  isLoggedIn = false,
   ratings,
   semester,
   courseNumber,
@@ -18,6 +20,7 @@ const {
   semester?: string
   editable?: boolean
   isAdd?: boolean
+  isLoggedIn?: boolean
   courseNumber?: string
   ratings?: { [key: string]: Rating }
   reloadData?: () => any
@@ -25,6 +28,7 @@ const {
 
 const showSnackbar = ref(false)
 const randomString = ref('');
+const moderationError = ref('')
 
 const emit = defineEmits(['update:review'])
 
@@ -59,10 +63,19 @@ function toggleEdit() {
 }
 
 async function submitEdit() {
-  await pushUpdateReview(reviewId, reviewText.value)
-  old_review.value = reviewText.value
-  isEditing.value = false
-  showSnackbar.value = true
+  try {
+    moderationError.value = ''
+    await pushUpdateReview(reviewId, reviewText.value)
+    old_review.value = reviewText.value
+    isEditing.value = false
+    showSnackbar.value = true
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
+      moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
+    } else {
+      throw error
+    }
+  }
 }
 
 async function deleteReview() {
@@ -81,14 +94,23 @@ async function submitNewReview() {
   if (ratings == undefined || semester == undefined || courseNumber == undefined) {
     console.log('Ratings undefined')
   } else {
-    await pushNewReview(reviewText.value, courseNumber, semester, randomString.value, ratings)
-    reviewText.value = ''
-    randomString.value = ''
-    localStorage.removeItem('text')
-    showSnackbar.value = true
-    //todo something here: clear ratings, review, semester, courseNumber and show text
-    if (reloadData != undefined) {
-      reloadData()
+    try {
+      moderationError.value = ''
+      await pushNewReview(reviewText.value, courseNumber, semester, randomString.value, ratings)
+      reviewText.value = ''
+      randomString.value = ''
+      localStorage.removeItem('text')
+      showSnackbar.value = true
+      //todo something here: clear ratings, review, semester, courseNumber and show text
+      if (reloadData != undefined) {
+        reloadData()
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
+        moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
+      } else {
+        throw error
+      }
     }
   }
 }
@@ -113,11 +135,17 @@ async function submitNewReview() {
         :readonly="!isEditing"
         v-on:input="updateValue"
       ></v-textarea>
-      
-      <h3 v-if="isAdd">Temporary Claim Code</h3>
-      <p v-if="isAdd">Login is currently unavailable. Enter a unique code here so you can claim this review later.</p>
-      <input v-model="randomString" placeholder="Pick a random string" maxlength="16"
-      style="border: 1px solid #ccc; padding: 2px 12px;" v-if="isAdd"/>
+
+      <div v-if="isAdd && !isLoggedIn">
+        <h3>Temporary Claim Code</h3>
+        <p>Login is currently unavailable. Enter a unique code here so you can claim this review later.</p>
+        <input v-model="randomString" placeholder="Pick a random string" maxlength="16"
+        style="border: 1px solid #ccc; padding: 2px 12px;"/>
+      </div>
+
+      <v-alert v-if="moderationError" type="warning" variant="tonal" class="mt-3" closable @click:close="moderationError = ''">
+        {{ moderationError }}
+      </v-alert>
 
     </v-card-text>
     <v-card-subtitle v-if="!editable">{{ semester }}</v-card-subtitle>

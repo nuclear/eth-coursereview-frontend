@@ -46,17 +46,15 @@
       <details>
         <summary>How does login work?</summary>
         <p>
-          We have an implementation of OAuth which uses the private n.ethz.ch websites ETH provides
-          for its Students.
+          We use <a href="https://uniclubs.ch" target="_blank">UniClubs</a> as our authentication
+          provider. UniClubs supports SWITCH edu-ID, the Swiss university federation login, so you
+          can log in with your existing university account.
         </p>
       </details>
       <details>
         <summary>What data do you save from me?</summary>
         <p>
-          When you submit a rating or review we save your UniqueId (one of many). See here:
-          <a href="https://n.ethz.ch/shibboleth-test/show" target="_blank"
-            >https://n.ethz.ch/shibboleth-test/show</a
-          >
+          When you submit a rating or review we save a unique identifier from your login session.
         </p>
         <p>
           We do this such that you can edit anything after submission and also that we can block

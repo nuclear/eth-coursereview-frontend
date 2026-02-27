@@ -258,7 +258,7 @@ onMounted(() => {
             density="comfortable"
           />
           <v-btn variant="text" icon="mdi-information-outline" to="/about" density="comfortable" />
-          <strong>CourseReview</strong> — {{ new Date().getFullYear() }}
+          <strong>CourseReview</strong> — {{ new Date().getFullYear() }} | Authentication by <a href="https://uniclubs.ch" target="_blank" class="unstyled-link" style="text-decoration: underline;">UniClubs</a>
         </div>
       </v-footer>
     </v-container>
