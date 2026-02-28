@@ -46,9 +46,9 @@
       <details>
         <summary>How does login work?</summary>
         <p>
-          We use <a href="https://uniclubs.ch" target="_blank">UniClubs</a> as our authentication
-          provider. UniClubs supports SWITCH edu-ID, the Swiss university federation login, so you
-          can log in with your existing university account.
+          We use <a href="https://uniclubs.ch" target="_blank">UniClubs</a> for login.
+          You can verify your ETH affiliation either via SWITCH edu-ID or by confirming your
+          university email address.
         </p>
       </details>
       <details>

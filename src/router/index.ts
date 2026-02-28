@@ -85,23 +85,14 @@ export async function decodeToken(token: string): Promise<tokenProperties> {
 
 export const studentAuth = async (): Promise<boolean> => {
   const token = cookies.get('jwt')
-  console.log('[studentAuth] Cookie jwt present:', !!token, 'length:', token?.length)
-
   if (!token) {
-    return false // No token, unauthorized
+    return false
   }
 
   try {
-    // Ensure the token is for a student
     const props = await decodeToken(token)
-    console.log('[studentAuth] decoded:', props)
-    if (!props.student) {
-      console.log('[studentAuth] Not a student, returning false')
-      return false
-    }
-    return true
-  } catch (error) {
-    console.error('[studentAuth] JWT verification failed:', error)
+    return props.student
+  } catch {
     return false
   }
 }

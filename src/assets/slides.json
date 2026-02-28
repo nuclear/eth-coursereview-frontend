@@ -1,8 +1,8 @@
 [
   {
     "title": "Login is Back!",
-    "subtitle": "Authenticate with your university account via UniClubs",
-    "text": "We have restored authentication through UniClubs, which supports SWITCH edu-ID (the Swiss university federation login). You can now log in with your university account to submit, edit, and delete your reviews.\n\nThank you for your patience while login was unavailable!",
+    "subtitle": "Log in via UniClubs",
+    "text": "Login works again! You can verify your ETH affiliation via SWITCH edu-ID or university email through UniClubs.",
     "image": "",
     "color": "green-lighten-3",
     "links": [
