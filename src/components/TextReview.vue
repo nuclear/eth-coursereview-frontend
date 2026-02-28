@@ -25,6 +25,8 @@ const {
 }>()
 
 const showSnackbar = ref(false)
+const snackbarText = ref('Review submitted successfully!')
+const snackbarColor = ref('')
 const moderationError = ref('')
 const submitting = ref(false)
 
@@ -71,12 +73,16 @@ async function submitEdit() {
     await pushUpdateReview(reviewId, reviewText.value)
     old_review.value = reviewText.value
     isEditing.value = false
+    snackbarText.value = 'Review submitted successfully!'
+    snackbarColor.value = ''
     showSnackbar.value = true
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
       moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
     } else {
-      throw error
+      snackbarText.value = 'Something went wrong. Please try again.'
+      snackbarColor.value = 'error'
+      showSnackbar.value = true
     }
   } finally {
     submitting.value = false
@@ -104,6 +110,8 @@ async function submitNewReview() {
     await pushNewReview(reviewText.value, courseNumber, semester || '', '', ratings)
     reviewText.value = ''
     localStorage.removeItem('text')
+    snackbarText.value = 'Review submitted successfully!'
+    snackbarColor.value = ''
     showSnackbar.value = true
     if (reloadData != undefined) {
       reloadData()
@@ -112,7 +120,9 @@ async function submitNewReview() {
     if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
       moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
     } else {
-      throw error
+      snackbarText.value = 'Something went wrong. Please try again.'
+      snackbarColor.value = 'error'
+      showSnackbar.value = true
     }
   } finally {
     submitting.value = false
@@ -120,8 +130,8 @@ async function submitNewReview() {
 }
 </script>
 <template>
-  <v-snackbar v-model="showSnackbar" timeout="5000" timer location="top right" max-width="410px">
-    Review submitted successfully!
+  <v-snackbar v-model="showSnackbar" timeout="5000" timer location="top right" max-width="410px" :color="snackbarColor">
+    {{ snackbarText }}
   </v-snackbar>
   <v-card class="border">
     <v-card-text>
