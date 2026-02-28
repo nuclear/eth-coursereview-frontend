@@ -54,11 +54,12 @@
       <details>
         <summary>What data do you save from me?</summary>
         <p>
-          When you submit a rating or review we save a unique identifier from your login session.
+          When you log in via UniClubs, the only information we receive is a random pseudonymous
+          identifier and whether you are a verified student. No name, no email, no personal data.
         </p>
         <p>
-          We do this such that you can edit anything after submission and also that we can block
-          people if they spam us.
+          We store this identifier alongside your reviews so that we can block accounts that spam
+          us.
         </p>
       </details>
       <details>
