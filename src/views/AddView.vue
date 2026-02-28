@@ -37,9 +37,7 @@ function selectCourse(number: string) {
   selectedCourseNumber.value = number
 }
 function blankPage() {
-  console.log('Blank page')
   starRatingsAdd.value = defaultStarRatings()
-  console.log(starRatingsAdd.value)
   selectedSemester.value = ''
   selectedCourseNumber.value = ''
 }

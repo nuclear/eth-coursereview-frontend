@@ -107,7 +107,7 @@ async function submitNewReview() {
   try {
     submitting.value = true
     moderationError.value = ''
-    await pushNewReview(reviewText.value, courseNumber, semester || '', '', ratings)
+    await pushNewReview(reviewText.value, courseNumber, semester || '', ratings)
     reviewText.value = ''
     localStorage.removeItem('text')
     snackbarText.value = 'Review submitted successfully!'
