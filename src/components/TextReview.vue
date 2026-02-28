@@ -26,6 +26,7 @@ const {
 
 const showSnackbar = ref(false)
 const moderationError = ref('')
+const submitting = ref(false)
 
 const emit = defineEmits(['update:review'])
 
@@ -34,6 +35,10 @@ const reviewText = computed({
   set: (newValue) => {
     emit('update:review', newValue)
   }
+})
+
+const canSubmitNew = computed(() => {
+  return courseNumber && courseNumber.trim() !== '' && reviewText.value.trim() !== '' && !submitting.value
 })
 
 const isEditing = ref(false)
@@ -61,6 +66,7 @@ function toggleEdit() {
 
 async function submitEdit() {
   try {
+    submitting.value = true
     moderationError.value = ''
     await pushUpdateReview(reviewId, reviewText.value)
     old_review.value = reviewText.value
@@ -72,6 +78,8 @@ async function submitEdit() {
     } else {
       throw error
     }
+  } finally {
+    submitting.value = false
   }
 }
 
@@ -87,27 +95,27 @@ async function deleteReview() {
 }
 
 async function submitNewReview() {
-  console.log('Submit new review')
-  if (ratings == undefined || semester == undefined || courseNumber == undefined) {
-    console.log('Ratings undefined')
-  } else {
-    try {
-      moderationError.value = ''
-      await pushNewReview(reviewText.value, courseNumber, semester, '', ratings)
-      reviewText.value = ''
-      localStorage.removeItem('text')
-      showSnackbar.value = true
-      //todo something here: clear ratings, review, semester, courseNumber and show text
-      if (reloadData != undefined) {
-        reloadData()
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
-        moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
-      } else {
-        throw error
-      }
+  if (ratings == undefined || courseNumber == undefined) {
+    return
+  }
+  try {
+    submitting.value = true
+    moderationError.value = ''
+    await pushNewReview(reviewText.value, courseNumber, semester || '', '', ratings)
+    reviewText.value = ''
+    localStorage.removeItem('text')
+    showSnackbar.value = true
+    if (reloadData != undefined) {
+      reloadData()
     }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 422 && error.response?.data?.moderation) {
+      moderationError.value = error.response.data.reason || 'Review did not pass automated screening.'
+    } else {
+      throw error
+    }
+  } finally {
+    submitting.value = false
   }
 }
 </script>
@@ -143,6 +151,7 @@ async function submitNewReview() {
         isEditing ? 'Cancel' : 'Edit'
       }}</v-btn>
       <v-btn v-if="isEditing" variant="flat" color="green-lighten-1" @click.stop="submitEdit"
+        :loading="submitting" :disabled="submitting || reviewText.trim() === ''"
         >Submit</v-btn
       >
       <v-btn variant="flat" color="red-lighten-1" @click.stop="deleteReview">Delete</v-btn>
@@ -153,6 +162,8 @@ async function submitNewReview() {
         variant="flat"
         color="green-lighten-1"
         @click.stop="submitNewReview"
+        :loading="submitting"
+        :disabled="!canSubmitNew"
         >Submit</v-btn
       >
     </v-card-actions>
