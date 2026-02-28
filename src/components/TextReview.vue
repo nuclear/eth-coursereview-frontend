@@ -151,7 +151,7 @@ async function submitNewReview() {
       ></v-textarea>
 
       <v-alert v-if="moderationError" type="warning" variant="tonal" class="mt-3" closable @click:close="moderationError = ''">
-        {{ moderationError }} Please try to describe what specifically was good or bad rather than just stating an opinion.
+        Your review was not accepted. Please critique the course or teaching, not the person. See the guidelines below.
       </v-alert>
 
     </v-card-text>
